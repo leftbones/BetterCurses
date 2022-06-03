@@ -7,11 +7,10 @@ class Widget:
     """
     def __init__(
         self,
-        parent,
         row, col,
         nrows, ncols,
     ):
-        self.parent = parent
+        self.parent = None
         self.row = row
         self.col = col
         self.nrows = nrows

@@ -131,10 +131,6 @@ class Window:
                 self.screen.delch(row, col)
                 self.screen.insch(row, col, ' ', *self.attrs)
 
-        # Widgets
-        for widget in self.widgets:
-            widget.print()
-
         # Border (Has to be printed last to avoid being overwritten)
         if self.border:
             self.screen.box()
@@ -150,6 +146,10 @@ class Window:
             # Title (requires border)
             if self.title:
                 self.screen.addstr(0, 1, f" {self.title} ", *self.attrs)
+
+        # Widgets
+        for widget in self.widgets:
+            widget.print()
 
     def translate_pos(self, cursor):
         """

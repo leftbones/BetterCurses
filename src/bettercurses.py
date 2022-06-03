@@ -8,29 +8,44 @@ import curses
 from terminal import Terminal
 from enums import Border
 
-from widgets.gutter import Gutter
+from widgets.tabwidget import TabWidget
+from widgets.editorwidget import EditorWidget
 
 
 def main(stdscr):
+    with open('bettercurses.py') as f:
+        lines = f.readlines();
+
     terminal = Terminal(stdscr)
     term_h, term_w = terminal.get_size()
 
-    editor = terminal.new_window(
-        0, 0, term_h, term_w,
-        title = "Editor"
+    container = terminal.new_window(0, 0, term_h, term_w)
+    window = terminal.new_window(0, 0, term_h, term_w)
+
+    tabwidget = TabWidget(
+        parent = container,
+        row = 0,
+        col = 0,
+        nrows = 0,
+        ncols = term_w,
     )
 
-    terminal.add_window(editor)
+    editor = EditorWidget(
+        parent = window,
+        row = 0,
+        col = 0,
+        nrows = term_h,
+        ncols = term_w,
+        contents = lines,
+        offset = 6
+    )
 
-#    gutter = Gutter(
-#        parent = editor,
-#        row = 0,
-#        col = 1,
-#        nrows = term_h,
-#        ncols = 5,
-#        offset = 5
-#    )
-#    editor.add_widget(gutter)
+    container.add_widget(tabwidget)
+    window.add_widget(editor)
+
+    tabwidget.add_tab(window)
+
+    terminal.add_window(container)
 
     while True:
         terminal.update()
@@ -44,7 +59,12 @@ def main(stdscr):
         elif key == 'J': terminal.cursor.shift_down()
         elif key == 'K': terminal.cursor.shift_up()
         elif key == 'L': terminal.cursor.shift_right()
-        elif key == '\t': terminal.focus_next_window()
+        elif key == '\t': tabwidget.next_tab()
+
+        elif key == '1': tabwidget.goto_tab(1)
+        elif key == '2': tabwidget.goto_tab(2)
+        elif key == '3': tabwidget.goto_tab(3)
+        elif key == '4': tabwidget.goto_tab(4)
 
 
 if __name__ == '__main__':
